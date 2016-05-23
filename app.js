@@ -1,17 +1,18 @@
-var restify = require('restify');
+var restify = require('restify')
 
 // Setup Restify Server
-var botapp = restify.createServer();
+var app = restify.createServer();
+app.use(restify.queryParser());
 
-
-botapp.get('/webhooks', function (req, res) {
-  if (req.query['hub.verify_token'] === 'aia_bot_verify_token') {
-    res.send(req.query['hub.challenge']);
+app.get('/webhooks', function (req, res) {
+console.log("webhooks: %s" , req.query['hub']['verify_token']);
+  if (req.query['hub']['verify_token'] === 'aia_bot_verify_token') {
+    res.send( req.query['hub']['challenge']);
   }
   res.send('Error, wrong validation token');
 })
 
 
-botapp.listen(process.env.port || 3978, function () {
-    console.log('%s listening to %s', botapp.name, botapp.url);
+app.listen(process.env.port || 3978, function () {
+    console.log('%s listening to %s', app.name, app.url);
 });
