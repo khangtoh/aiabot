@@ -7,13 +7,10 @@ app.use(restify.queryParser());
 app.get('/webhooks', function (req, res) {
 console.log("webhooks: %s" , req.query['hub']['verify_token']);
   if (req.query['hub']['verify_token'] === 'aia_bot_verify_token') {
-  	var challenge =  req.query['hub']['challenge'];
-  	var body = req.query['hub']['challenge']
-  	console.log("got challenge: %s",req.query['hub']['challenge']);
-  	res.write(body);
-    res.end();
+  	res.write(req.query['hub']['challenge']);
+  	res.end();
   }
-  res.send('Error, wrong validation token');
+  res.send(200,'Error, wrong validation token');
 })
 
 
