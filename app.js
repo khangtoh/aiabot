@@ -3,7 +3,7 @@ var restify = require('restify')
 // Setup Restify Server
 var app = restify.createServer();
 app.use(restify.queryParser());
-
+app.use(restify.bodyParser());
 // Webhooks
 // GET
 app.get('/webhooks', function (req, res) {
@@ -13,10 +13,12 @@ console.log("webhooks: %s" , req.query['hub']['verify_token']);
   	res.end();
   }
   res.send(200,'Error, wrong validation token');
+  res.next();
+  
 })
 
 // POST
-app.post('/webhook/', function (req, res) {
+app.post('/webhooks', function (req, res) {
   messaging_events = req.body.entry[0].messaging;
   for (i = 0; i < messaging_events.length; i++) {
     event = req.body.entry[0].messaging[i];
@@ -27,6 +29,8 @@ app.post('/webhook/', function (req, res) {
     }
   }
   res.sendStatus(200);
+  res.next();
+
 });
 
 app.listen(process.env.port || 3978, function () {
