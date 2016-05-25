@@ -29,7 +29,7 @@ app.post('/webhooks', function (req, res) {
 			if (event.message && event.message.text) {
 		  		text = event.message.text;
 		  		console.log("webhooks[POST]: entry ",text);
-		  		sendTextMessage(sender, "Text received, echo: "+ text.substring(0, 200));
+		  		replyText(sender, "Text received, echo: "+ text.substring(0, 200));
 			}
 		}
 	}
@@ -48,17 +48,17 @@ var client = restify.createJsonClient({
 });
 
 
-var token = "EAAPfDeNZBkSEBAGNQEWeT9K3qTLV0T8xZC09GxqUmAL1ENBlZAwyH2SDyU98lcQ9bZCXuPAyhXk23JBTKGRVvVqVOwydYfOKKXiPqSoOiMG05sDvdGKcZCv6OZCfml8y5tpH65ZCDAchf9O2B2o9KZCCY5Yp0pSkdUfTL2W1ZB8caaAZDZD";
 
-function sendTextMessage(sender, text) {
+function replyText(sender, text) {
+	console.log("replyText to ",sender,text);
+	var token = "EAAPfDeNZBkSEBAGNQEWeT9K3qTLV0T8xZC09GxqUmAL1ENBlZAwyH2SDyU98lcQ9bZCXuPAyhXk23JBTKGRVvVqVOwydYfOKKXiPqSoOiMG05sDvdGKcZCv6OZCfml8y5tpH65ZCDAchf9O2B2o9KZCCY5Yp0pSkdUfTL2W1ZB8caaAZDZD";
+
 	
-	console.log("sendTextMessage to ",sender,text);
-
 	var client = restify.createJsonClient({
   		url: 'https://graph.facebook.com'
 	});
 	var options = {
-	  path: '/v2.6/me/messages',
+	  path: '/v2.6/me/messages?access_token='+token,
 	  headers: {
 	    'x-foo': 'bar'
 	  },
@@ -72,25 +72,13 @@ function sendTextMessage(sender, text) {
 	  
 	  agent: false
 	};
-	client.post(options, function(err,req,res) {});
 
-
-  messageData = {
-    text:text
-  }
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
-    }
-  });
+	client.post(options, function(err,req,res) {
+		if (err) {
+			console.log('Error sending message: ', error);
+		}
+		else {
+			console.log('sent: ', res.error);
+		}
+	});
 }
