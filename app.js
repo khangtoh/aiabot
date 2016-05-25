@@ -20,7 +20,7 @@ console.log("webhooks: %s" , req.query['hub']['verify_token']);
 // POST
 app.post('/webhooks', function (req, res) {
 	console.log("webhooks[POST]: start");
-	console.log(req.body.toString());
+	console.log(JSON.stringify(req.body));
 	if (req.body && req.body.entry) {
 		messaging_events = req.body.entry[0].messaging;
 		for (i = 0; i < messaging_events.length; i++) {
