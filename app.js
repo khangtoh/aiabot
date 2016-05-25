@@ -19,6 +19,7 @@ console.log("webhooks: %s" , req.query['hub']['verify_token']);
 
 // POST
 app.post('/webhooks', function (req, res) {
+	console.log("webhooks[POST]: start");
 
 	if (req.body && req.body.entry) {
 		messaging_events = req.body.entry[0].messaging;
@@ -27,7 +28,7 @@ app.post('/webhooks', function (req, res) {
 			sender = event.sender.id;
 			if (event.message && event.message.text) {
 		  	text = event.message.text;
-		  	console.log("webhooks[POST]: ",text);
+		  	console.log("webhooks[POST]: entry ",text);
 			}
 		}
 	}
