@@ -29,7 +29,7 @@ app.post('/webhooks', function (req, res) {
 			if (event.message && event.message.text) {
 		  		text = event.message.text;
 		  		console.log("webhooks[POST]: entry ",text);
-		  		//sendTextMessage(sender, "Text received, echo: "+ text.substring(0, 200));
+		  		sendTextMessage(sender, "Text received, echo: "+ text.substring(0, 200));
 			}
 		}
 	}
@@ -43,10 +43,38 @@ app.listen(process.env.port || 3978, function () {
     console.log('%s listening to %s', app.name, app.url);
 });
 
+var client = restify.createJsonClient({
+  url: 'https://graph.facebook.com'
+});
+
 
 var token = "EAAPfDeNZBkSEBAGNQEWeT9K3qTLV0T8xZC09GxqUmAL1ENBlZAwyH2SDyU98lcQ9bZCXuPAyhXk23JBTKGRVvVqVOwydYfOKKXiPqSoOiMG05sDvdGKcZCv6OZCfml8y5tpH65ZCDAchf9O2B2o9KZCCY5Yp0pSkdUfTL2W1ZB8caaAZDZD";
 
 function sendTextMessage(sender, text) {
+	
+	console.log("sendTextMessage to ",sender,text);
+
+	var client = restify.createJsonClient({
+  		url: 'https://graph.facebook.com'
+	});
+	var options = {
+	  path: '/v2.6/me/messages',
+	  headers: {
+	    'x-foo': 'bar'
+	  },
+	  retry: {
+	    'retries': 0
+	  },
+	  body: {
+	  	recipient: {id:sender},
+      	message: {text:text }
+      },
+	  
+	  agent: false
+	};
+	client.post(options, function(err,req,res) {});
+
+
   messageData = {
     text:text
   }
